@@ -1,0 +1,7 @@
+streamlit
+numpty
+pandas
+altair
+pyvisa
+pyvisa-sim
+pyvisa-py

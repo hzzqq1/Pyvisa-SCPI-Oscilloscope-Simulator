@@ -1,0 +1,364 @@
+spec: "1.1"
+
+devices:
+  device 1:
+    emo:
+      ASRL INSTR:
+        q: "\n"
+        r: "\n"
+    error:
+      response:
+        Command Error: "Error command type"
+        Execution Error: "Error variable input"
+        Query Error: "No value in queue"
+        VI_ERROR_TMO: "Time out of range "
+        VI_ERROR_RSRC_BUSY : "Resource is occupied"
+      status_register:
+        - q: "*ESR?"
+          VI_ERROR_TMO: 1
+          Command Error: 2
+          Execution Error: 3
+          Query Error: 4
+          VI_ERROR_RSRC_BUSY: 5
+    properties: 
+      wave_data:
+        default: 0.00
+        getter:
+          q: ":WAV:DATA?"
+          r: "{}"
+        setter:
+          q: "WAV:DATA {}"
+        specs:
+          min: 0
+          max: 100000
+          type: str
+
+      ch1_display:
+        default: "ON"
+        getter:
+          q: ":CHANnel1:DISPlay?"
+          r: "{}"
+        setter:
+          q: ":CHANnel1:DISPlay {}"
+        specs:
+          valid: ["ON", "OFF", "1", "0"]
+          type: str
+
+      ch1_scale:
+        default: 1.0
+        getter:
+          q: ":CHANnel1:SCALe?"
+          r: "{}"
+        setter:
+          q: ":CHANnel1:SCALe {}"
+        specs:
+          min: 0.001
+          max: 100.0
+          type: float
+
+      ch1_offset:
+        default: 0.0
+        getter:
+          q: ":CHANnel1:OFFSet?"
+          r: "{}"
+        setter:
+          q: ":CHANnel1:OFFSet {}"
+        specs:
+          min: -100.0
+          max: 100.0
+          type: float
+
+      ch1_coupling:
+        default: "DC"
+        getter:
+          q: ":CHANnel1:COUPling?"
+          r: "{}"
+        setter:
+          q: ":CHANnel1:COUPling {}"
+        specs:
+          valid: ["DC", "AC", "GND"]
+          type: str
+
+      timebase_scale:
+        default: 0.001 
+        getter:
+          q: ":TIMebase:MAIN:SCALe?"
+          r: "{}"
+        setter:
+          q: ":TIMebase:MAIN:SCALe {}"
+        specs:
+          min: 0.000001
+          max: 10.0
+          type: float
+
+      trig_level:
+        default: 0.0
+        getter:
+          q: ":TRIGger:EDGe:LEVel?"
+          r: "{}"
+        setter:
+          q: ":TRIGger:EDGe:LEVel {}"
+        specs:
+          min: -50.0
+          max: 50.0
+          type: float
+
+      meas_vpp:
+        default: 0.0
+        getter:
+          q: ":MEASure:AVERage? VPP,CHANnel1"
+          r: "{}"
+        setter:
+          q: "INTERNAL:SET:VPP {}" 
+        specs:
+          type: float
+
+      meas_freq:
+        default: 100.0
+        getter:
+          q: ":MEASure:AVERage? FREQuency,CHANnel1"
+          r: "{}"
+        setter:
+          q: "INTERNAL:SET:FREQ {}" 
+        specs:
+          type: float
+
+    dialogues:
+      - q: "*IDN?"
+        r: "AGILENT TECHNOLOGIES,DSO-X 3024A,MY12345678,02.35"
+      - q: ":RUN"
+      - q: ":STOP"
+      - q: ":SINGle"
+
+ 
+  device 2:
+    eom:
+      USB INSTR:
+        q: "\n"
+        r: "\n"
+    error:
+      response:
+        Command Error: "Error command type"
+        Execution Error: "Error variable input"
+        Query Error: "No value in queue"
+        VI_ERROR_TMO: "Time out of range "
+        VI_ERROR_RSRC_BUSY : "Resource is occupied"
+      status_register:
+        - q: "*ESR?"
+          VI_ERROR_TMO: 1
+          Command Error: 2
+          Execution Error: 3
+          Query Error: 4
+          VI_ERROR_RSRC_BUSY: 5
+    properties:
+      func_mode:
+        default: "VOLT:DC"
+        getter:
+          q: ":CONFigure?"
+          r: "\"{}\""
+        setter:
+          q: "INTERNAL:SET:FUNC {}"
+        specs:
+          type: str
+
+      # 2. 自动量程状态 (ON / OFF)
+      range_auto:
+        default: "ON"
+        getter:
+          q: ":VOLTage:DC:RANGe:AUTO?"
+          r: "{}"
+        setter:
+          q: ":VOLTage:DC:RANGe:AUTO {}"
+        specs:
+          valid: ["ON", "OFF", "1", "0"]
+          type: str
+
+      # 3. 手动量程数值 (如 0.1, 1, 10, 100, 1000)
+      dc_range:
+        default: 10.0
+        getter:
+          q: ":VOLTage:DC:RANGe?"
+          r: "{}"
+        setter:
+          q: ":VOLTage:DC:RANGe {}"
+        specs:
+          min: 0.1
+          max: 1000.0
+          type: float
+
+      # 4. 最新一次采样的科学计数法字符串缓存
+      latest_reading:
+        default: "+0.00000E+00"
+        getter:
+          q: ":READ?"
+          r: "{}"
+        setter:
+          q: "INTERNAL:SET:READING {}"
+        specs:
+          type: str
+
+    dialogues:
+      - q: "*IDN?"
+        r: "HEWLETT-PACKARD,34401A,0,10-5-2"
+      - q: "*RST"
+      # 常见配置指令（无返回值，由 Python 拦截处理并同步内部状态）
+      - q: ":CONFigure:VOLTage:DC"
+      - q: ":CONFigure:VOLTage:AC"
+      - q: ":CONFigure:CURRent:DC"
+      - q: ":CONFigure:RESistance"
+
+
+  device 3:
+    eom:
+      ASRL INSTR:
+        q: "\n" 
+        r: "\n"
+    error:
+      response:
+        Command Error: "Error command type"
+        Execution Error: "Error variable input"
+        Query Error: "No value in queue"
+        VI_ERROR_TMO: "Time out of range "
+        VI_ERROR_RSRC_BUSY : "Resource is occupied"
+      status_register:
+        - q: "*ESR?"
+          VI_ERROR_TMO: 1
+          Command Error: 2
+          Execution Error: 3
+          Query Error: 4
+          VI_ERROR_RSRC_BUSY: 5
+    properties:
+      frequency:
+        default: 200.0
+        getter:
+          q: ":FREQuency?"
+          r: "{}"
+        setter:
+          q: ":FREQuency {}"
+        specs:
+          min: 0.1
+          max: 100000.0
+          type: float
+      amplitude:
+        default: 2.0
+        getter:
+          q: ":VOLTage?"
+          r: "{}"
+        setter:
+          q: ":VOLTage {}"
+        specs:
+          min: 0.01
+          max: 20.0
+          type: float
+      offset:
+        default: 1.5
+        getter:
+          q: ":VOLTage:OFFSet?"
+          r: "{}"
+        setter:
+          q: ":VOLTage:OFFSet {}"
+        specs:
+          min: -10.0
+          max: 10.0
+          type: float
+    dialogues:
+      - q: "*IDN?"
+        r: "Agilent Technologies,33220A,0,2.04-1.01-2.00-03-2"
+      
+      - q: "*RST"
+  
+  
+  device 4:
+    eom:
+      GPIB INSTR:
+        q: "\n"
+        r: "\n"
+    error:
+      response:
+        Command Error: "Error command type"
+        Execution Error: "Error variable input"
+        Query Error: "No value in queue"
+        VI_ERROR_TMO: "Time out of range "
+        VI_ERROR_RSRC_BUSY : "Resource is occupied"
+      status_register:
+        - q: "*ESR?"
+          VI_ERROR_TMO: 1
+          Command Error: 2
+          Execution Error: 3
+          Query Error: 4
+          VI_ERROR_RSRC_BUSY: 5
+    properties:
+      # 1. 设定输出电压 (V)
+      voltage_set:
+        default: 5.0
+        getter:
+          q: ":VOLTage?"
+          r: "{}"
+        setter:
+          q: ":VOLTage {}"
+        specs:
+          min: 0.0
+          max: 30.0
+          type: float
+
+      # 2. 设定限流保护值 (A)
+      current_limit:
+        default: 1.0
+        getter:
+          q: ":CURRent?"
+          r: "{}"
+        setter:
+          q: ":CURRent {}"
+        specs:
+          min: 0.01
+          max: 5.0
+          type: float
+
+      # 3. 输出总开关 (ON / OFF)
+      output_state:
+        default: "ON"
+        getter:
+          q: ":OUTPut?"
+          r: "{}"
+        setter:
+          q: ":OUTPut {}"
+        specs:
+          valid: ["ON", "OFF", "1", "0"]
+          type: str
+
+      # 4. 电源自身回读的真实输出电压（供 :MEASure:VOLTage? 查询）
+      actual_volt:
+        default: 5.0
+        getter:
+          q: ":MEASure:VOLTage?"
+          r: "{}"
+        setter:
+          q: "INTERNAL:PSU:VOLT {}"
+        specs:
+          type: float
+
+      # 5. 电源自身回读的真实输出电流（供 :MEASure:CURRent? 查询）
+      actual_curr:
+        default: 0.25
+        getter:
+          q: ":MEASure:CURRent?"
+          r: "{}"
+        setter:
+          q: "INTERNAL:PSU:CURR {}"
+        specs:
+          type: float
+
+    dialogues:
+      - q: "*IDN?"
+        r: "AGILENT TECHNOLOGIES,E3631A,0,2.1-5.0-1.0"
+      - q: "*RST"
+
+resources:
+    ASRL1::INSTR:
+        device: device 1
+    USB::0x1111::0x2222::0x1234::INSTR:
+        device: device 2
+    ASRL2::INSTR:
+        device: device 3
+    GPIB0::5::INSTR:
+        device: device 4
