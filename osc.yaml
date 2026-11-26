@@ -161,7 +161,7 @@ devices:
         specs:
           type: str
 
-      # 2. 自动量程状态 (ON / OFF)
+
       range_auto:
         default: "ON"
         getter:
@@ -173,7 +173,7 @@ devices:
           valid: ["ON", "OFF", "1", "0"]
           type: str
 
-      # 3. 手动量程数值 (如 0.1, 1, 10, 100, 1000)
+
       dc_range:
         default: 10.0
         getter:
@@ -186,7 +186,7 @@ devices:
           max: 1000.0
           type: float
 
-      # 4. 最新一次采样的科学计数法字符串缓存
+
       latest_reading:
         default: "+0.00000E+00"
         getter:
@@ -201,7 +201,7 @@ devices:
       - q: "*IDN?"
         r: "HEWLETT-PACKARD,34401A,0,10-5-2"
       - q: "*RST"
-      # 常见配置指令（无返回值，由 Python 拦截处理并同步内部状态）
+
       - q: ":CONFigure:VOLTage:DC"
       - q: ":CONFigure:VOLTage:AC"
       - q: ":CONFigure:CURRent:DC"
@@ -288,7 +288,7 @@ devices:
           Query Error: 4
           VI_ERROR_RSRC_BUSY: 5
     properties:
-      # 1. 设定输出电压 (V)
+
       voltage_set:
         default: 5.0
         getter:
@@ -301,7 +301,7 @@ devices:
           max: 30.0
           type: float
 
-      # 2. 设定限流保护值 (A)
+
       current_limit:
         default: 1.0
         getter:
@@ -314,7 +314,7 @@ devices:
           max: 5.0
           type: float
 
-      # 3. 输出总开关 (ON / OFF)
+
       output_state:
         default: "ON"
         getter:
@@ -326,7 +326,7 @@ devices:
           valid: ["ON", "OFF", "1", "0"]
           type: str
 
-      # 4. 电源自身回读的真实输出电压（供 :MEASure:VOLTage? 查询）
+
       actual_volt:
         default: 5.0
         getter:
@@ -337,7 +337,7 @@ devices:
         specs:
           type: float
 
-      # 5. 电源自身回读的真实输出电流（供 :MEASure:CURRent? 查询）
+
       actual_curr:
         default: 0.25
         getter:
