@@ -1,7 +1,0 @@
-[theme]
-base = "dark"
-primaryColor = "#00FFAA"           # 示波器荧光绿主色调
-backgroundColor = "#0E1117"        # 深邃炭黑背景
-secondaryBackgroundColor = "#161B22" # 仪器面板深灰底色
-textColor = "#E6EDF3"
-font = "monospace"    
