@@ -42,8 +42,6 @@ if "mul_history" not in st.session_state:
 if "mul_sample_point" not in st.session_state:
     st.session_state["mul_sample_point"] = 0
 
-
-
 if "state" not in st.session_state:
     st.session_state["state"] = "STOPPED"
 
@@ -140,7 +138,6 @@ def execute_scpi_command(device_name, dev_obj, raw_cmd):
             elif cmd_upper.startswith(":MEAS"):
                 #dev_obj.write("INTERNAL:SET:FUNC VOLT:DC")
                 #dev_obj.write(":VOLTage:DC:RANGe:AUTO ON")
-                # 立即计算一次最新值返回，即使在 STOPPED 状态下也能测出结果！
                 #v_psu, _, _, _ = get_psu_real_output(st.session_state["psu"])
                 #val_str = f"{v_psu:+.5E}"
                 #dev_obj.write(f"INTERNAL:SET:READING {val_str}")
@@ -302,6 +299,7 @@ with left_col:
                 t = np.linspace(0, total_time, 100, endpoint=False)
                 
                 if (dc_bias - signal_amp) <= trig_lvl <= (dc_bias + signal_amp):
+                    trig_status = "🟢 TRIG'D"
                     norm_lvl = np.clip((trig_lvl - dc_bias) / signal_amp, -1.0, 1.0)
                     phase = np.arcsin(norm_lvl)
                 else:
@@ -310,7 +308,8 @@ with left_col:
                         phase = st.session_state["phase_different"]
                     else:
                         phase = 0.00
-                        
+                    trig_status = "🟡 AUTO (Un-triggered)"
+            
                 if st.session_state["state"] =="RUNNING":
                     noise = np.random.normal(0, 0.05, len(t))
                     st.session_state["osc_noise"] = noise  
@@ -331,6 +330,12 @@ with left_col:
                 vpp = float(np.max(processed_wave) - np.min(processed_wave))
                 osc_dev.write(f"INTERNAL:SET:VPP {vpp:.3f}")
                 osc_dev.write(f"INTERNAL:SET:FREQ {signal_freq:.1f}")
+
+                trig_df = pd.DataFrame({"Trigger": [trig_lvl]})
+                trig_rule = alt.Chart(trig_df).mark_rule(color="#FF4B4B", strokeDash=[5, 5], strokeWidth=1.5).encode(
+                    y="Trigger:Q"
+                )
+
                 with st.container(border=True):
                     y_min = v_offset - 4.0 * v_scale
                     y_max = v_offset + 4.0 * v_scale
@@ -340,8 +345,9 @@ with left_col:
                         x=alt.X("Time (s)", title=f"Time ({t_scale*1000:.2f} ms/div)"),
                         y=alt.Y("Voltage (V)", scale=alt.Scale(domain=[y_min, y_max]), title=f"Voltage ({v_scale} V/div)")
                     ).properties(height=400)
-                    st.altair_chart(chart, use_container_width=True)
-
+                    #st.altair_chart(chart, use_container_width=True)
+                    st.altair_chart((chart + trig_rule).properties(height=400), use_container_width=True)
+            
             wave_generated_common()
 
 
