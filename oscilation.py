@@ -309,6 +309,7 @@ with left_col:
                     else:
                         phase = 0.00
                     trig_status = "🟡 AUTO (Un-triggered)"
+                st.caption(f"Trigger Status: **{trig_status}** | Level: **{trig_lvl} V**")
             
                 if st.session_state["state"] =="RUNNING":
                     noise = np.random.normal(0, 0.05, len(t))
