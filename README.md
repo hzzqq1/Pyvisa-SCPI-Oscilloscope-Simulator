@@ -2,9 +2,12 @@
 This is a simulator which simulate the Oscilloscope, Signal Generator, Multimeter and DC power by pvyisa-sim to simulate the device. 
 [Have a try on this.](https://pyvisa-scpi-oscilloscope-simulator-wpv57wzndtjiekb6auylfj.streamlit.app/)
 
-Ocvilloscope: AGILENT TECHNOLOGIES,DSO-X 3024A,MY12345678,02.35 
+Ocvilloscope: AGILENT TECHNOLOGIES,DSO-X 3024A,MY12345678,02.35
+
 Multimeter: HEWLETT-PACKARD,34401A,0,10-5-2
+
 Signal Generator: Agilent Technologies,33220A,0,2.04-1.01-2.00-03-2
+
 DC power: AGILENT TECHNOLOGIES,E3631A,0,2.1-5.0-1.0
 
 Use SCPI command to further operate the wave. 
